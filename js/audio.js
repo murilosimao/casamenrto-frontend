@@ -10,7 +10,7 @@ export const audio = (() => {
             audio.load();
             audio.currentTime = 0;
             audio.autoplay = false;
-            audio.muted = false;
+            audio.muted = true;
             audio.loop = true;
             audio.volume = 0;
         }

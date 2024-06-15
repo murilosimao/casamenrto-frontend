@@ -1,4 +1,4 @@
-import { audio } from './audio.js';
+// import { audio } from './audio.js';
 import { theme } from './theme.js';
 import { comment } from './comment.js';
 import { storage } from './storage.js';
@@ -100,25 +100,28 @@ export const util = (() => {
 
     const copy = async (button, message, timeout = 1500) => {
         try {
-            await navigator.clipboard.writeText(button.getAttribute('data-copy'));
-        } catch {
-            alert('Falha ao copiar');
-            return;
+            if (navigator.clipboard) {
+                const permissionStatus = await navigator.permissions.query({ name: 'clipboard-write' });
+                if (permissionStatus.state === 'granted' || permissionStatus.state === 'prompt') {
+                    await navigator.clipboard.writeText(button.getAttribute('data-copy'));
+                    button.disabled = true;
+                    let tmp = button.innerText;
+                    button.innerText = message;
+    
+                    let clear = setTimeout(() => {
+                        button.disabled = false;
+                        button.innerText = tmp;
+                        clearTimeout(clear);
+                    }, timeout);
+                } else {
+                    throw new Error('Permissão para acessar a área de transferência não concedida');
+                }
+            } else {
+                throw new Error('Navegador não suporta a API de área de transferência');
+            }
+        } catch (error) {
+            alert(`Falha ao copiar: ${error.message}`);
         }
-
-        button.disabled = true;
-        let tmp = button.innerText;
-        button.innerText = message;
-
-        let clear = null;
-        clear = setTimeout(() => {
-            button.disabled = false;
-            button.innerText = tmp;
-
-            clearTimeout(clear);
-            clear = null;
-            return;
-        }, timeout);
     };
 
     const animation = () => {
@@ -186,7 +189,7 @@ export const util = (() => {
 
         theme.check();
         AOS.init();
-        audio.play();
+        // audio.play();
         document.querySelector('body').style.overflowY = 'scroll';
 
         if (localStorage.getItem('alertClosed')) {
@@ -195,7 +198,7 @@ export const util = (() => {
 
         opacity('welcome', 0.025);
         countDownDate();
-        audio.showButton();
+        // audio.showButton();
         document.getElementById('button-theme').style.display = 'block';
 
         const token = document.querySelector('body').getAttribute('data-key');
