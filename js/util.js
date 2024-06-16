@@ -123,6 +123,20 @@ export const util = (() => {
             alert(`Falha ao copiar: ${error.message}`);
         }
     };
+    
+    const showInformation = () => {
+        const infoSection = document.getElementById('information');
+        if (infoSection) {
+            infoSection.style.display = 'block';
+        }
+    };
+
+    const close = () => {
+        const infoSection = document.getElementById('information');
+        if (infoSection) {
+            infoSection.style.display = 'none';
+        }
+    };
 
     const animation = () => {
         const duration = 15 * 1000;
@@ -213,6 +227,7 @@ export const util = (() => {
         open,
         copy,
         show,
+        close,
         modal,
         opacity,
         animate,
@@ -220,5 +235,6 @@ export const util = (() => {
         escapeHtml,
         countDownDate,
         disableButton,
+        showInformation,
     }
 })();
